@@ -65,6 +65,13 @@ public class ParserAlbums {
         String date;
         String imgURL;
         String genre;
+        public Album(){
+            name = "";
+            author = "";
+            date = "";
+            imgURL = "";
+            genre = "";
+        }
 
     }
 
