@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 
-public class ParserAlbums {
+public class AlbumParser {
     private void toSerializeJson(List<AlbumEntity> albums,  String filename){
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(filename)) {
