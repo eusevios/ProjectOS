@@ -7,10 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
 
 public class ParserAlbums {
     private void toJson(List<Album> albums,  String filename){
@@ -22,16 +22,10 @@ public class ParserAlbums {
         }
     }
     private static String formatDate(String inputDate) {
-        try {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH);
-            Date date = inputFormat.parse(inputDate);
-            SimpleDateFormat outputFormat = new SimpleDateFormat("dd.MM.yyyy");
-            return outputFormat.format(date);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
+        LocalDate date = LocalDate.parse(inputDate, inputFormatter);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return date.format(outputFormatter);
     }
     public void parse(String filename) throws IOException {
 
