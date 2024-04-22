@@ -22,17 +22,13 @@ public class ParsingUtils {
 
         }
     }
-    protected static String formatDate(String inputDate, String format) {
-        SimpleDateFormat originalFormat = new SimpleDateFormat(format, Locale.ENGLISH);
-        SimpleDateFormat targetFormat = new SimpleDateFormat("dd.MM.yyyy");
-        try {
+    protected static String formatDate(String inputDate, String inputFormat, String outputFormat) throws ParseException {
+        SimpleDateFormat originalFormat = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+        SimpleDateFormat targetFormat = new SimpleDateFormat(outputFormat);
             Date date = originalFormat.parse(inputDate);
             String formattedDate = targetFormat.format(date);
             return formattedDate;
-        }
-        catch (ParseException ignored) {
-            return "";
-        }
+
 
     }
 

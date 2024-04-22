@@ -4,6 +4,7 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class AlbumParser extends  Parser {
                     Document albumPage = Jsoup.connect(lfm).get();
                     album.name = albumPage.select("h1").text();
                     album.author = albumPage.select(".about-artist-name").first().text();
-                    album.date = ParsingUtils.formatDate(albumPage.getElementsByClass("catalogue-metadata-description").last().text(), "d MMMM yyyy");
+                    album.date = ParsingUtils.formatDate(albumPage.getElementsByClass("catalogue-metadata-description").last().text(), "d MMMM yyyy", "dd.MM.yyyy");
                     album.imgURL = albumPage.select("div.header-new-background-image").attr("content");
                     album.trackList = albumPage.getElementsByClass("chartlist-name").eachText().toArray(new String[0]);
                     album.tags = Jsoup.connect(lfm+"/+tags").get().getElementsByClass("big-tags-item-name").eachText().toArray(new String[0]);
@@ -38,9 +39,7 @@ public class AlbumParser extends  Parser {
                     ++k;
                     System.out.println(k);
                 }
-                catch (HttpStatusException | NullPointerException ignored){
-
-                }
+                catch (HttpStatusException | NullPointerException | ParseException ignored){}
             }
         }
         ParsingUtils.toSerializeJson(albums, filename);

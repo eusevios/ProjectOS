@@ -54,7 +54,7 @@ public class MovieParser extends Parser {
 
             String date = doc.getElementsByAttributeValue("data-cy", "release-date").text();
             if(date.equals("TBA 2024")) movieEntity.date = "TBA 2024";
-            else movieEntity.date = ParsingUtils.formatDate(date, "MMM dd, yyyy");
+            else movieEntity.date = ParsingUtils.formatDate(date, "MMM dd, yyyy", "dd.MM.yyyy");
 
 
             movieEntity.imgURL = doc.getElementsByClass("jsx-109104613 object-thumbnail").select("img").attr("src");
