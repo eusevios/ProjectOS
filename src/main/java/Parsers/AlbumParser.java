@@ -17,7 +17,6 @@ public class AlbumParser extends  Parser {
 
         List<AlbumEntity> albums = new ArrayList<>();
 
-        int k = 0;
         for (int i = 1; i <= pageNumber; i++) {
 
             Document doc = Jsoup.connect("https://www.last.fm/music/+releases/coming-soon/popular?page="+ i).get();
@@ -29,15 +28,13 @@ public class AlbumParser extends  Parser {
                     AlbumEntity album = new AlbumEntity();
                     String lfm = "https://www.last.fm"+url;
                     Document albumPage = Jsoup.connect(lfm).get();
-                    album.name = albumPage.select("h1").text();
-                    album.author = albumPage.select(".about-artist-name").first().text();
-                    album.date = ParsingUtils.formatDate(albumPage.getElementsByClass("catalogue-metadata-description").last().text(), "d MMMM yyyy", "dd.MM.yyyy");
-                    album.imgURL = albumPage.select("div.header-new-background-image").attr("content");
-                    album.trackList = albumPage.getElementsByClass("chartlist-name").eachText().toArray(new String[0]);
-                    album.tags = Jsoup.connect(lfm+"/+tags").get().getElementsByClass("big-tags-item-name").eachText().toArray(new String[0]);
+                    album.setName(albumPage.select("h1").text());
+                    album.setAuthor(albumPage.select(".about-artist-name").first().text());
+                    album.setDate(ParsingUtils.formatDate(albumPage.getElementsByClass("catalogue-metadata-description").last().text(), "d MMMM yyyy", "dd.MM.yyyy"));
+                    album.setImgURL(albumPage.select("div.header-new-background-image").attr("content"));
+                    album.setTrackList(albumPage.getElementsByClass("chartlist-name").eachText().toArray(new String[0]));
+                    album.setTags(Jsoup.connect(lfm + "/+tags").get().getElementsByClass("big-tags-item-name").eachText().toArray(new String[0]));
                     albums.add(album);
-                    ++k;
-                    System.out.println(k);
                 }
                 catch (HttpStatusException | NullPointerException | ParseException ignored){}
             }

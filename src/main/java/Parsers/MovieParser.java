@@ -3,6 +3,7 @@ import Entities.MovieEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
@@ -42,23 +43,29 @@ public class MovieParser extends Parser {
         }
         driver.quit();
 
-        int k = 0;
         List<MovieEntity> list = new ArrayList<>();
         for(String link : links){
-            Document doc = Jsoup.connect(link).get();
-            MovieEntity movieEntity = new MovieEntity();
-            movieEntity.name = doc.getElementsByClass("display-title jsx-1812565333 balanced").text();
-            movieEntity.producers = doc.select(".object-summary-text.producers-info .small a").eachText().toArray(new String[0]);
-            movieEntity.genres = doc.select(".object-summary-text.genres-info .small a").eachText().toArray(new String[0]);
-            movieEntity.summary =  doc.select(".object-summary-text.summary-info .interface").text();
+            try {
 
-            String date = doc.getElementsByAttributeValue("data-cy", "release-date").text();
-            if(date.equals("TBA 2024")) movieEntity.date = "TBA 2024";
-            else movieEntity.date = ParsingUtils.formatDate(date, "MMM dd, yyyy", "dd.MM.yyyy");
+                Document doc = Jsoup.connect(link).get();
 
+                MovieEntity movieEntity = new MovieEntity();
 
-            movieEntity.imgURL = doc.getElementsByClass("jsx-109104613 object-thumbnail").select("img").attr("src");
-            list.add(movieEntity);
+                movieEntity.setName(doc.getElementsByClass("display-title jsx-1812565333 balanced").text());
+                movieEntity.setProducers(doc.select(".object-summary-text.producers-info .small a").eachText().toArray(new String[0]));
+                movieEntity.setGenres(doc.select(".object-summary-text.genres-info .small a").eachText().toArray(new String[0]));
+                movieEntity.setSummary(doc.select(".object-summary-text.summary-info .interface").text());
+
+                String date = doc.getElementsByAttributeValue("data-cy", "release-date").text();
+
+                if (date.equals("TBA 2024")) movieEntity.setDate("TBA 2024");
+                else movieEntity.setDate(ParsingUtils.formatDate(date, "MMM dd, yyyy", "dd.MM.yyyy"));
+
+                movieEntity.setImgURL(doc.getElementsByClass("jsx-109104613 object-thumbnail").select("img").attr("src"));
+                list.add(movieEntity);
+
+            }
+            catch (HttpStatusException ignored){}
 
         }
         ParsingUtils.toSerializeJson(list, filename);

@@ -46,28 +46,30 @@ public class GameParser extends Parser{
         System.out.println(setLinks.size());
         for(String link : setLinks) {
             try {
+
                 Document doc = Jsoup.connect(link).get();
                 GameEntity game = new GameEntity();
-                game.name = doc.getElementsByClass("display-title jsx-1812565333 balanced").text();
-                game.publishers = doc.select(".object-summary-text.publishers-info .small a").text();
-                game.developers = doc.select(".object-summary-text.developers-info .small a").text();
-                game.franchises = doc.select(".object-summary-text.franchises-info .small a").text();
-                game.genres = doc.select(".object-summary-text.genres-info .small a").eachText().toArray(new String[0]);
-                game.platforms = doc.select(".object-summary-text.platforms-info .platforms a").eachAttr("title").toArray(new String[0]);
-                game.summary = doc.select(".object-summary-text.summary-info .interface").text();
+
+                game.setName( doc.getElementsByClass("display-title jsx-1812565333 balanced").text());
+                game.setPublishers( doc.select(".object-summary-text.publishers-info .small a").text());
+                game.setDevelopers( doc.select(".object-summary-text.developers-info .small a").text());
+                game.setFranchises( doc.select(".object-summary-text.franchises-info .small a").text());
+                game.setGenres(doc.select(".object-summary-text.genres-info .small a").eachText().toArray(new String[0]));
+                game.setPlatforms(doc.select(".object-summary-text.platforms-info .platforms a").eachAttr("title").toArray(new String[0]));
+                game.setSummary(doc.select(".object-summary-text.summary-info .interface").text());
 
                 String date = doc.getElementsByAttributeValue("data-cy", "release-date").text();
                 if (date.contains(","))
-                    game.date = ParsingUtils.formatDate(date, "MMM dd, yyyy", "dd.MM.yyyy");
+                    game.setDate(ParsingUtils.formatDate(date, "MMM dd, yyyy", "dd.MM.yyyy"));
                 else {
                     try {
-                        game.date = ParsingUtils.formatDate(date, "MMMM yyyy", "MM.yyyy");
+                        game.setDate(ParsingUtils.formatDate(date, "MMMM yyyy", "MM.yyyy"));
                     }
                     catch (ParseException e){
-                        game.date = date;
+                        game.setDate(date);
                     }
                 }
-                game.imgURL = doc.getElementsByClass("jsx-2982775576 object-thumbnail").select("img").attr("src");
+                game.setImgURL(doc.getElementsByClass("jsx-2982775576 object-thumbnail").select("img").attr("src"));
 
                 list.add(game);
             }
