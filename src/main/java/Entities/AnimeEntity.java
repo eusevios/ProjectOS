@@ -9,5 +9,7 @@ public class AnimeEntity extends Entity {
     public String[] genres;
     public String[] topics;
     public String rating;
-    public String[] authors;
+    public String studio;
+
+    public String imgURL;
 }
