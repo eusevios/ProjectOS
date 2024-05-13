@@ -51,35 +51,5 @@ public class GameEntity extends Entity{
         this.imgURL = imgURL;
     }
 
-    public String getPublishers() {
-        return publishers;
-    }
 
-    public String getDevelopers() {
-        return developers;
-    }
-
-    public String getFranchises() {
-        return franchises;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String[] getPlatforms() {
-        return platforms;
-    }
-
-    public String[] getGenres() {
-        return genres;
-    }
-
-    public String getImgURL() {
-        return imgURL;
-    }
 }

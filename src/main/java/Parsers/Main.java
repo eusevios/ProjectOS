@@ -5,7 +5,7 @@ import java.text.ParseException;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, ParseException {
-        Parser parser = new AnimeParser();
-        parser.parse("Anime.json");
+        Parser parser = new MangaParser();
+        parser.parse("Manga.json");
     }
 }

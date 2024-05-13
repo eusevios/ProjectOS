@@ -30,32 +30,32 @@ public class AnimeParser extends Parser{
 
                 String str = animePage.select("h1").text();
                 int ind = str.lastIndexOf("/");
-                anime.name = (ind == -1 ? str : str.substring(ind+2));
+                anime.setName((ind == -1 ? str : str.substring(ind + 2)));
 
                 try {
-                    anime.type = animePage.select("div.key:containsOwn(Тип:)").first().nextElementSibling().text();
+                    anime.setType(animePage.select("div.key:containsOwn(Тип:)").first().nextElementSibling().text());
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
                 try{
-                    anime.duration = animePage.select("div.key:containsOwn(Длительность эпизода:)").first().nextElementSibling().text();
+                    anime.setDuration(animePage.select("div.key:containsOwn(Длительность эпизода:)").first().nextElementSibling().text());
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
                 try {
-                    anime.genres = animePage.select("div.key:containsOwn(Жанр)").first().nextElementSibling()
-                            .select("span.genre-en").eachText().toArray(new String[0]);
+                    anime.setGenres(animePage.select("div.key:containsOwn(Жанр)").first().nextElementSibling()
+                            .select("span.genre-en").eachText().toArray(new String[0]));
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
                 try {
-                    anime.topics = animePage.select("div.key:containsOwn(Тем)").
-                            first().nextElementSibling().select("span.genre-en").eachText().toArray(new String[0]);
+                    anime.setTopics(animePage.select("div.key:containsOwn(Тем)").
+                            first().nextElementSibling().select("span.genre-en").eachText().toArray(new String[0]));
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
                 try {
-                    anime.rating = animePage.select("div.key:containsOwn(Рейтинг)").first().nextElementSibling().text();
+                    anime.setRating(animePage.select("div.key:containsOwn(Рейтинг)").first().nextElementSibling().text());
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
@@ -65,13 +65,13 @@ public class AnimeParser extends Parser{
                             attr("data-datetime");
                     date = date.substring(0, date.indexOf("T"));
 
-                    anime.date = ParsingUtils.formatDate(date, "yyyy-MM-dd", "dd.MM.yyyy");
+                    anime.setDate(ParsingUtils.formatDate(date, "yyyy-MM-dd", "dd.MM.yyyy"));
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
 
                 try{
-                    anime.imgURL = animePage.select("div.b-db_entry-poster.b-image").attr("data-href");
+                    anime.setImgURL(animePage.select("div.b-db_entry-poster.b-image").attr("data-href"));
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
@@ -80,11 +80,14 @@ public class AnimeParser extends Parser{
 
                 if(elem!=null) {
                     str = elem.attr("alt");
-                    anime.studio = str.substring(str.lastIndexOf("и") + 2);
+                    anime.setStudio(str.substring(str.lastIndexOf("и") + 2));
                 }
                 else {
-                    anime.studio = animePage.select("a.b-tag").attr("title");
+                    str = animePage.select("a.b-tag").attr("title");
+                    anime.setStudio(str.substring(str.lastIndexOf("и") + 2));
                 }
+                anime.setSummary(animePage.select("div.b-text_with_paragraphs").text());
+
 
                 animeEntities.add(anime);
                 Thread.sleep(500);
