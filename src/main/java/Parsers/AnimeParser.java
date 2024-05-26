@@ -1,5 +1,7 @@
 package Parsers;
 import Entities.AnimeEntity;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,12 +11,15 @@ import org.jsoup.select.Selector;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AnimeParser extends Parser{
-
+    private static final Logger logger  = LogManager.getLogger(AnimeParser.class);
     @Override
-    void parse(String filename) throws IOException, InterruptedException, ParseException {
+    void parse() throws IOException, InterruptedException, ParseException {
+        logger.info("Parsing of anime started");
+
         int pageNumber = Integer.parseInt(Jsoup.connect("https://shikimori.one/animes/status/ongoing").
                 get().getElementsByClass("link-total").last().text());
         List<AnimeEntity> animeEntities = new ArrayList<>();
@@ -22,10 +27,18 @@ public class AnimeParser extends Parser{
         for (int i = 1; i <= pageNumber; i++) {
             Connection con = Jsoup.connect( "https://shikimori.one/animes/status/ongoing/page/"+i);
             Document doc = con.get();
-
             List<String> ongoingAnimeURLs = doc.getElementsByClass("cc-entries").select("a").eachAttr("href");
+            Document animePage;
             for(String url : ongoingAnimeURLs){
-                Document animePage = Jsoup.connect(url).get();
+                try {
+                    animePage = Jsoup.connect(url).get();
+                }
+                catch (Exception e){
+
+                    logger.info("Connection error: " + url, e);
+                    continue;
+
+                }
                 AnimeEntity anime = new AnimeEntity();
 
                 String str = animePage.select("h1").text();
@@ -75,26 +88,28 @@ public class AnimeParser extends Parser{
                 }
                 catch (Selector.SelectorParseException | NullPointerException ignored){}
 
-
                 Element elem = animePage.select("img.studio-logo").first();
 
-                if(elem!=null) {
-                    str = elem.attr("alt");
-                    anime.setStudio(str.substring(str.lastIndexOf("и") + 2));
+                try {
+                    if (elem != null) {
+                        str = elem.attr("alt");
+                        anime.setStudio(str.substring(str.lastIndexOf("и") + 2));
+                    } else {
+                        str = animePage.select("a.b-tag").attr("title");
+                        anime.setStudio(str.substring(str.lastIndexOf("и") + 2));
+                    }
+                    anime.setSummary(animePage.select("div.b-text_with_paragraphs").text());
                 }
-                else {
-                    str = animePage.select("a.b-tag").attr("title");
-                    anime.setStudio(str.substring(str.lastIndexOf("и") + 2));
-                }
-                anime.setSummary(animePage.select("div.b-text_with_paragraphs").text());
-
+                catch (Exception ignored){}
 
                 animeEntities.add(anime);
                 Thread.sleep(500);
-
             }
         }
-
+        Date date = new Date();
+        date.setMonth(date.getMonth()+1);
+        date.setYear(date.getYear() + 1900);
+        String filename = "animes_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getDate() + "_" + date.getMonth() + "_" + date.getYear() + ".json";
         ParsingUtils.toSerializeJson(animeEntities, filename);
 
     }

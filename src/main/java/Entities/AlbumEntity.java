@@ -8,29 +8,6 @@ public class AlbumEntity extends Entity {
     private String[] tags;
     private String[] trackList;
 
-    public String getName() {
-        return name;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getImgURL() {
-        return imgURL;
-    }
-
-    public String[] getTags() {
-        return tags;
-    }
-
-    public String[] getTrackList() {
-        return trackList;
-    }
 
     public void setName(String name) {
         this.name = name;

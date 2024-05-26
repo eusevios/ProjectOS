@@ -8,11 +8,12 @@ import org.jsoup.select.Selector;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MangaParser extends Parser {
     @Override
-    void parse(String filename) throws IOException, InterruptedException {
+    void parse() throws IOException, InterruptedException {
 
         int pageNumber = Integer.parseInt(Jsoup.connect("https://shikimori.one/mangas/status/ongoing").
                 get().getElementsByClass("link-total").last().text());
@@ -61,6 +62,11 @@ public class MangaParser extends Parser {
                 mangaEntities.add(manga);
 
                 Thread.sleep(500);
+
+                Date date = new Date();
+                date.setMonth(date.getMonth()+1);
+                date.setYear(date.getYear() + 1900);
+                String filename = "manga_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getDate() + "_" + date.getMonth() + "_" + date.getYear() + ".json";
 
                 ParsingUtils.toSerializeJson(mangaEntities, filename);
 

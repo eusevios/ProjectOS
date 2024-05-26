@@ -35,9 +35,6 @@ public class AnimeEntity extends Entity {
         this.genres = genres;
     }
 
-    public String[] getTopics() {
-        return topics;
-    }
 
     public void setTopics(String[] topics) {
         this.topics = topics;
@@ -48,9 +45,6 @@ public class AnimeEntity extends Entity {
         this.rating = rating;
     }
 
-    public String getStudio() {
-        return studio;
-    }
 
     public void setStudio(String studio) {
         this.studio = studio;

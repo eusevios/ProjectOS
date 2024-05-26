@@ -18,16 +18,19 @@ public class ParsingUtils {
         try (FileWriter writer = new FileWriter(filename)) {
             gson.toJson(albums, writer);
         }
-        catch (IOException ignored) {
-
-        }
+        catch (IOException ignored) {}
     }
     protected static String formatDate(String inputDate, String inputFormat, String outputFormat) throws ParseException {
-        SimpleDateFormat originalFormat = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
-        SimpleDateFormat targetFormat = new SimpleDateFormat(outputFormat);
+        try {
+            SimpleDateFormat originalFormat = new SimpleDateFormat(inputFormat, Locale.ENGLISH);
+            SimpleDateFormat targetFormat = new SimpleDateFormat(outputFormat);
             Date date = originalFormat.parse(inputDate);
             String formattedDate = targetFormat.format(date);
             return formattedDate;
+        }
+        catch (ParseException e){
+            return inputDate;
+        }
 
 
     }

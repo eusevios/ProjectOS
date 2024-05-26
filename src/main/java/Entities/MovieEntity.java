@@ -8,29 +8,6 @@ public class MovieEntity extends Entity {
     private String summary;
     private String imgURL;
 
-    public String getName() {
-        return name;
-    }
-
-    public String[] getProducers() {
-        return producers;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String[] getGenres() {
-        return genres;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public String getImgURL() {
-        return imgURL;
-    }
 
     public void setName(String name) {
         this.name = name;

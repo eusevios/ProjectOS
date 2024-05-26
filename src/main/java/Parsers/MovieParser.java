@@ -3,6 +3,8 @@ import Entities.MovieEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,11 +19,15 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class MovieParser extends Parser {
+    private static final Logger logger = LogManager.getLogger(MovieParser.class);
     @Override
-    public void parse(String filename) throws IOException, InterruptedException, ParseException {
+    public void parse() throws IOException, InterruptedException, ParseException {
+
+        logger.info("Parsing of movies started");
 
         WebDriver driver = new ChromeDriver();
         driver.get("https://www.ign.com/upcoming/movies");
@@ -44,10 +50,15 @@ public class MovieParser extends Parser {
         driver.quit();
 
         List<MovieEntity> list = new ArrayList<>();
+        Document doc;
         for(String link : links){
             try {
-
-                Document doc = Jsoup.connect(link).get();
+                doc = Jsoup.connect(link).get();
+            }
+            catch (Exception e ){
+                logger.info("Connection error: " + link, e);
+                continue;
+            }
 
                 MovieEntity movieEntity = new MovieEntity();
 
@@ -64,10 +75,15 @@ public class MovieParser extends Parser {
                 movieEntity.setImgURL(doc.getElementsByClass("jsx-109104613 object-thumbnail").select("img").attr("src"));
                 list.add(movieEntity);
 
-            }
-            catch (HttpStatusException ignored){}
+
 
         }
+        Date date = new Date();
+        date.setMonth(date.getMonth()+1);
+        date.setYear(date.getYear() + 1900);
+        String filename = "movies_" + date.getHours() + "_" + date.getMinutes() + "_" + date.getDate() + "_" + date.getMonth() + "_" + date.getYear() + ".json";
+
+
         ParsingUtils.toSerializeJson(list, filename);
 
 

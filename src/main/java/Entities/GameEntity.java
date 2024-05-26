@@ -11,10 +11,6 @@ public class GameEntity extends Entity{
     private String[] genres;
     private String imgURL;
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
