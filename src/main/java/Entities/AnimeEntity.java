@@ -11,7 +11,6 @@ public class AnimeEntity extends Entity {
     private String rating;
     private String studio;
     private String imgURL;
-    private String summary;
 
     public void setName(String name) {
         this.name = name;
@@ -56,7 +55,4 @@ public class AnimeEntity extends Entity {
     }
 
 
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
 }
