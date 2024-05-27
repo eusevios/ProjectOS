@@ -26,7 +26,7 @@ public class GameParser extends Parser {
         //Set the path to the ChromeDriver binary
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 
-        // Set Chrome options
+        //Set Chrome options
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");
@@ -83,9 +83,13 @@ public class GameParser extends Parser {
             else {
                 game.setDate(ParsingUtils.formatDate(date, "MMMM yyyy", "MM.yyyy"));
             }
-            game.setImgURL(gamePage.select("img.jsx-2920405963.progressive-image.object-image.jsx-405688819.expand").attr("src"));
+            String imgURL = gamePage.select("img.jsx-2920405963.progressive-image.object-image.jsx-405688819.expand").attr("src");
+            try {
+                imgURL = imgURL.substring(0, imgURL.lastIndexOf("?"));
+                game.setImgURL(imgURL);
+            }
+            catch (Exception ignored){};
             gameEntities.add(game);
-
         }
         Date date = new Date();
         date.setMonth(date.getMonth() + 1);

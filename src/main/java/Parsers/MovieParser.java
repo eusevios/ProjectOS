@@ -10,6 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.safari.SafariTechPreviewDriverService;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -25,7 +26,6 @@ public class MovieParser extends Parser {
 
     @Override
     public void parse() throws IOException, InterruptedException, ParseException {
-
         logger.info("Parsing of movies started");
 
         // Set the path to the ChromeDriver binary
@@ -84,7 +84,13 @@ public class MovieParser extends Parser {
             movieEntity.setSummary(moviePage.select(".object-summary-text.summary-info .interface").text());
             String date = moviePage.getElementsByAttributeValue("data-cy", "release-date").text();
             movieEntity.setDate(ParsingUtils.formatDate(date, "MMM dd, yyyy", "dd.MM.yyyy"));
-            movieEntity.setImgURL(moviePage.select("img.jsx-2920405963.progressive-image.object-image.jsx-405688819.expand").attr("src"));
+
+            String imgURL = moviePage.select("img.jsx-2920405963.progressive-image.object-image.jsx-405688819.expand").attr("src");
+            try {
+                imgURL = imgURL.substring(0, imgURL.lastIndexOf("?"));
+                movieEntity.setImgURL(imgURL);
+            }
+            catch (Exception ignored){};
             movieEntities.add(movieEntity);
         }
         Date date = new Date();
